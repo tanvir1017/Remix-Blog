@@ -1,11 +1,54 @@
-import { useParams } from "remix";
+import { Link, redirect, useLoaderData } from "remix";
+import { db } from "~/utils/db.server";
+
+
+export const loader = async ({params}) => {
+    const post = await db.post.findUnique({
+        where: {id: params.postId}
+    })
+
+    if(!post) throw new Error ("Post not found")
+
+    const data = { post }
+    return data;
+}
+
+export const action = async ({request, params}) => {
+    const form = await request.formData()
+
+    const post = await db.post.findUnique({
+        where: {id: params.postId}
+    })
+
+    if (!post) throw new Error("Id can't delete successfully")
+    
+    await db.post.delete({where:{id: params.postId}}
+    )
+    return redirect("/post")
+}
+
 
 const dynamicPost = () => {
-const param = useParams()
+const {post} = useLoaderData()
     return (
-        <div>
-            <h2>This is dynamic post {param.postId}</h2>
+        <>
+        <div className="page-header">
+            <h2>{post.title}</h2>
+            <Link to="/post" className="btn btn-reverse">
+                Back
+            </Link>
+
         </div>
+            <div className="page-content">
+                {post.body}
+            </div>
+            <div className="page-footer">
+                <form method="POST">
+                    <input type="hidden" name="_method" value="delete" />
+                    <button className="btn btn-delete">Delete</button>
+                </form>
+            </div>
+</>
     );
 };
 

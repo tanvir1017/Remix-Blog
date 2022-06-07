@@ -33,6 +33,7 @@ p {
 .logo {
   font-size: x-large;
   text-transform: uppercase;
+  color: white;
 }
 
 .navbar {
@@ -64,7 +65,7 @@ p {
 
 .navbar ul li a:hover {
   color: #ffffff;
-  border-bottom: 1px solid #ffffff;
+  border-bottom: 1px solid #9ccde9;
 }
 
 .btn {

@@ -1,39 +1,39 @@
 
 import { Link, useLoaderData } from "remix";
+import { db } from "~/utils/db.server";
 
 export const loader = async() => {
-    // const res = await fetch("https://jsonplaceholder.typicode.com/users")
-    // const data = await res.json()
+  const data = {
+    posts: await db.post.findMany({
     
-    const data = {
-        posts: [
-            { _id: 1, userId: 1, title: "This is the post no 01" },
-            { _id: 2, userId: 2, title: "This is the post no 02" },
-            { _id: 3, userId: 3, title: "This is the post no 03" },
-        ]
-    }
+      take: 20,
+      select: { id: true, title: true, createdAt: true }
+    })
+  }
   return data;
 }
 
-const index = () => {
+function PostItems() {
     const {posts} = useLoaderData()
-    return (
-        <div>
+    return (<>
+        <div className="page-header">
             <h2>Posts</h2>
             <Link to="/post/newPost" className="btn">
                 Create Post
-            </Link>
+        </Link>
+        </div>
       <ul className="posts-list">
         {posts.map(post => (
-          <li key={post._id}>
-            <Link to={post.userId}  >
-                    <h3>{post.title}</h3>
-            </Link>
+          <li key={post.id}>
+            <Link to={post.id}>
+              <h3>{post.title}</h3>
+              {new Date(post.createdAt).toLocaleString()}
+            </Link>      
           </li>
         ))}
       </ul>
-    </div>
+    </>
     );
 };
 
-export default index;
+export default PostItems;

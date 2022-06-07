@@ -1,4 +1,5 @@
 /node_modules
+/prisma/dev.db
 /build
 /public/build
 /.cache
